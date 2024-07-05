@@ -5,10 +5,12 @@ import BarraLateral from "./components/BarraLateral/BarraLateral"
 import Banner from "./components/Banner/Banner"
 import banner from "./assets/banner.png"
 import Galeria from "./components/Galeria/Galeria"
-import fotos from "./fotos.json"
-import { useState } from "react"
+// import fotos from "./fotos.json"
+import { useEffect, useState } from "react"
 import ModalZoom from "./components/ModalZoom/ModalZoom"
 import Pie from "./components/Pie/Pie"
+import Cargando from "./components/Cargando/Cargando"
+import GlobalContextProvider from "./context/GlobalContext"
 
 const FondoGradiente = styled.div`
 background: linear-gradient(174.61deg, #041833 4.16%, #04244F 48%, #154580 96.76%);
@@ -32,50 +34,29 @@ flex-grow: 1;
 
 
 const App = () => {
-  const [fotosDeGaleria, setFotosDeGaleria] = useState(fotos)
-  const [fotoSeleccionada, setFotoSeleccionada] = useState(null)
-
-  const alAlternarFavorito = (foto) => {
-
-    if (foto.id === fotoSeleccionada?.id) {
-      setFotoSeleccionada({
-        ...fotoSeleccionada,
-        favorita: !foto.favorita
-      })
-    }
-    setFotosDeGaleria(fotosDeGaleria.map(fotosDeGaleria => {
-      return {
-        ...fotosDeGaleria,
-        favorita: fotosDeGaleria.id === foto.id ? !foto.favorita : fotosDeGaleria.favorita
-      }
-    }))
-  }
-
 
   return (
     <>
-      <FondoGradiente>
+      <FondoGradiente >
         <GlobalStyles />
-        <AppContainer>
-          <Cabecera />
-          <MainContainer>
-            <BarraLateral />
-            <ContenidoGaleria >
-              <Banner texto="La galería más completa de fotos del espacio"
-                backgroundImage={banner} />
+        <GlobalContextProvider >
+          <AppContainer>
+            <Cabecera />
+            <MainContainer>
+              <BarraLateral />
+              <ContenidoGaleria >
+                <Banner texto="La galería más completa de fotos del espacio"
+                  backgroundImage={banner} />
+                <Galeria />
+              </ContenidoGaleria >
+            </MainContainer>
+          </AppContainer>
+          <ModalZoom />
 
-              <Galeria alSeleccionarFoto={foto => setFotoSeleccionada(foto)}
-                fotos={fotosDeGaleria}
-                alAlternarFavorito={alAlternarFavorito} />
-            </ContenidoGaleria >
-          </MainContainer>
-        </AppContainer>
-        <ModalZoom foto={fotoSeleccionada}
-          alCerrar={() => setFotoSeleccionada(null)}
-          alAlternarFavorito={alAlternarFavorito} />
-    
-      <Pie/>
+          <Pie />
+          </GlobalContextProvider >
       </FondoGradiente>
+   
     </>
   )
 }
